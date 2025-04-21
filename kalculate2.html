@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор викидів твердих частинок</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .result {
+      background: #f0f0f0;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Калькулятор валових викидів твердих частинок</h1>
+  <p><strong>Варіант 6</strong>:</p>
+  <ul>
+    <li>Вугілля: 526603,46 т</li>
+    <li>Мазут: 140032,85 т</li>
+    <li>Природний газ: 158540080 м³</li>
+  </ul>
+  <button onclick="calculate()">Розрахувати</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      // Вихідні дані
+      const coalMass = 526603.46;
+      const oilMass = 140032.85;
+      const gasVolume = 158540080; // м³
+      const coalQr = 20.47; // МДж/кг
+      const oilQr = 40.4;   // МДж/кг
+      const gasQr = 33.08;  // МДж/м³
+      const gasDensity = 0.723; // кг/м³
+
+      // Показники емісії (з контрольного прикладу)
+      const kDustCoal = 150; // г/ГДж
+      const kDustOil = 0.57; // г/ГДж
+      const kDustGas = 0;    // г/ГДж (газ не створює твердих частинок)
+
+      // Валові викиди:
+      const Ecoal = (kDustCoal * coalMass * 1000) / (coalQr * 1e3) / 1000; // т
+      const Eoil = (kDustOil * oilMass * 1000) / (oilQr * 1e3) / 1000;     // т
+      const gasMass = gasVolume * gasDensity / 1000;                      // т
+      const Egas = (kDustGas * gasMass * 1000) / (gasQr * 1e3) / 1000;     // т
+
+      const total = (Ecoal + Eoil + Egas).toFixed(2);
+
+      document.getElementById('output').innerHTML = `
+        <strong>Результати:</strong><br>
+        Валовий викид при спалюванні вугілля: ${Ecoal.toFixed(2)} т<br>
+        Валовий викид при спалюванні мазуту: ${Eoil.toFixed(2)} т<br>
+        Валовий викид при спалюванні природного газу: ${Egas.toFixed(2)} т<br>
+        <br><strong>Загальний валовий викид: ${total} т</strong>
+      `;
+    }
+  </script>
+</body>
+
+</html>
