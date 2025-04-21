@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор теплоти згоряння</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    input[type="number"] {
+      width: 100px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Калькулятор складу палива та теплоти згоряння</h1>
+  <p>Варіант 6: HP=1.5%, CP=76.4%, SP=1.70%, NP=0.80%, OP=1.30%, WP=5.0%, AP=13.3%</p>
+  <button onclick="calculate()">Розрахувати</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      const HP = 1.5, CP = 76.4, SP = 1.7, NP = 0.8, OP = 1.3, WP = 5.0, AP = 13.3;
+
+      const KRS = 100 / (100 - WP);
+      const KRG = 100 / (100 - WP - AP);
+
+      const HS = (HP * KRS).toFixed(2);
+      const CS = (CP * KRS).toFixed(2);
+      const SS = (SP * KRS).toFixed(2);
+      const NS = (NP * KRS).toFixed(2);
+      const OS = (OP * KRS).toFixed(2);
+      const AS = (AP * KRS).toFixed(2);
+
+      const HG = (HP * KRG).toFixed(2);
+      const CG = (CP * KRG).toFixed(2);
+      const SG = (SP * KRG).toFixed(2);
+      const NG = (NP * KRG).toFixed(2);
+      const OG = (OP * KRG).toFixed(2);
+
+      const QpH = (339 * CP + 1030 * HP - 108.8 * (OP - SP) - 25 * WP) / 1000;
+      const QdH = QpH * KRS;
+      const QdafH = QpH * KRG;
+
+      document.getElementById('output').innerHTML = `
+        <strong>Коефіцієнти:</strong><br>
+        KRS = ${KRS.toFixed(2)}, KRG = ${KRG.toFixed(2)}<br><br>
+
+        <strong>Сухий склад (%):</strong><br>
+        H: ${HS}, C: ${CS}, S: ${SS}, N: ${NS}, O: ${OS}, A: ${AS}<br><br>
+
+        <strong>Горючий склад (%):</strong><br>
+        H: ${HG}, C: ${CG}, S: ${SG}, N: ${NG}, O: ${OG}<br><br>
+
+        <strong>Нижча теплота згоряння:</strong><br>
+        Робоча маса: ${QpH.toFixed(4)} МДж/кг<br>
+        Суха маса: ${QdH.toFixed(4)} МДж/кг<br>
+        Горюча маса: ${QdafH.toFixed(4)} МДж/кг
+      `;
+    }
+  </script>
+</body>
+
+</html>
