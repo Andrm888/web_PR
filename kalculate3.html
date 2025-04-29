@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор прибутку СЕС</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Калькулятор прибутку від СЕС з прогнозуванням</h2>
+
+  <label for="area">Площа панелей (м²):</label>
+  <input type="number" id="area" step="0.1">
+
+  <label for="irradiance">Сонячна радіація (кВт·год/м²/день):</label>
+  <input type="number" id="irradiance" step="0.1">
+
+  <label for="efficiency">ККД системи (%):</label>
+  <input type="number" id="efficiency" step="0.1">
+
+  <label for="price">Ціна за 1 кВт·год (грн):</label>
+  <input type="number" id="price" step="0.01">
+
+  <label for="days">Кількість днів у році:</label>
+  <input type="number" id="days" value="365">
+
+  <label for="losses">Втрати ефективності (%):</label>
+  <input type="number" id="losses" step="0.1">
+
+  <button onclick="calculateProfit()">Розрахувати прибуток</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculateProfit() {
+      const area = parseFloat(document.getElementById("area").value);
+      const irradiance = parseFloat(document.getElementById("irradiance").value);
+      const efficiency = parseFloat(document.getElementById("efficiency").value) / 100;
+      const price = parseFloat(document.getElementById("price").value);
+      const days = parseInt(document.getElementById("days").value);
+      const losses = parseFloat(document.getElementById("losses").value) / 100;
+
+      if (isNaN(area) || isNaN(irradiance) || isNaN(efficiency) ||
+        isNaN(price) || isNaN(days) || isNaN(losses)) {
+        document.getElementById("result").innerText = "Будь ласка, заповніть усі поля правильно.";
+        return;
+      }
+
+      const profit = area * irradiance * efficiency * price * days * (1 - losses);
+      document.getElementById("result").innerText = `Орієнтовний річний прибуток: ${profit.toFixed(2)} грн`;
+    }
+  </script>
+</body>
+
+</html>
