@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор надійності систем електропередачі</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      background: #f0f0f0;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Калькулятор надійності та збитків від перерв електропостачання</h2>
+
+  <label for="lambda">Інтенсивність відмов (λ, 1/рік):</label>
+  <input type="number" id="lambda" step="0.001">
+
+  <label for="tavg">Середній час ремонту (год):</label>
+  <input type="number" id="tavg" step="0.1">
+
+  <label for="power">Потужність навантаження (кВт):</label>
+  <input type="number" id="power" step="1">
+
+  <label for="cost">Вартість простою (грн/кВт·год):</label>
+  <input type="number" id="cost" step="0.01">
+
+  <button onclick="calculate()">Розрахувати</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculate() {
+      const lambda = parseFloat(document.getElementById("lambda").value);
+      const tavg = parseFloat(document.getElementById("tavg").value);
+      const power = parseFloat(document.getElementById("power").value);
+      const cost = parseFloat(document.getElementById("cost").value);
+
+      if (isNaN(lambda) || isNaN(tavg) || isNaN(power) || isNaN(cost)) {
+        document.getElementById("result").innerText = "Будь ласка, заповніть усі поля правильно.";
+        return;
+      }
+
+      const Un_single = lambda * tavg; // одноколова
+      const Un_double = Math.pow(lambda, 2) * tavg; // двоколова (наближення)
+      const Loss_single = Un_single * power * cost;
+      const Loss_double = Un_double * power * cost;
+
+      document.getElementById("result").innerHTML = `
+        <p>Недоступність одноколової системи: ${Un_single.toFixed(5)} год/рік</p>
+        <p>Збитки при одноколовій системі: ${Loss_single.toFixed(2)} грн/рік</p>
+        <p>Недоступність двоколової системи: ${Un_double.toFixed(5)} год/рік</p>
+        <p>Збитки при двоколовій системі: ${Loss_double.toFixed(2)} грн/рік</p>
+      `;
+    }
+  </script>
+</body>
+
+</html>

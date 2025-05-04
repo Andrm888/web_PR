@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор КЗ та стійкості кабелю</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f0f0f0;
+      border-radius: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Калькулятор короткого замикання і стійкості кабелю</h2>
+
+  <label>Номінальна напруга (кВ):</label>
+  <input id="voltage" type="number" step="0.1">
+
+  <label>Повний опір Z (Ом):</label>
+  <input id="impedance" type="number" step="0.01">
+
+  <label>Площа перерізу кабелю S (мм²):</label>
+  <input id="section" type="number">
+
+  <label>Час КЗ (сек):</label>
+  <input id="time" type="number" step="0.1">
+
+  <label>k (матеріал кабелю):</label>
+  <input id="k" type="number" value="143">
+
+  <label>K<sub>dyn</sub> (коеф. динам. дії):</label>
+  <input id="k_dyn" type="number" value="2.5">
+
+  <button onclick="calculate()">Розрахувати</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      const U = parseFloat(document.getElementById("voltage").value) * 1000; // в Вольтах
+      const Z = parseFloat(document.getElementById("impedance").value);
+      const S = parseFloat(document.getElementById("section").value);
+      const t = parseFloat(document.getElementById("time").value);
+      const k = parseFloat(document.getElementById("k").value);
+      const Kdyn = parseFloat(document.getElementById("k_dyn").value);
+
+      if (isNaN(U) || isNaN(Z) || isNaN(S) || isNaN(t) || isNaN(k) || isNaN(Kdyn)) {
+        document.getElementById("output").innerText = "Будь ласка, заповніть всі поля.";
+        return;
+      }
+
+      const I3f = U / (Math.sqrt(3) * Z);
+      const I1f = U / Z;
+      const Itherm = (k * S) / Math.sqrt(t);
+      const Idyn = Kdyn * I3f;
+
+      document.getElementById("output").innerHTML =
+        `Трифазний струм КЗ: ${I3f.toFixed(2)} A<br>` +
+        `Однофазний струм КЗ: ${I1f.toFixed(2)} A<br>` +
+        `Термічна стійкість кабелю: ${Itherm.toFixed(2)} A<br>` +
+        `Динамічна стійкість: ${Idyn.toFixed(2)} A`;
+    }
+  </script>
+
+</body>
+
+</html>
