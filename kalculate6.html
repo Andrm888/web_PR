@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Калькулятор електричних навантажень</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    input[type="number"] {
+      width: 80px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Калькулятор електричних навантажень (метод впорядкованих діаграм)</h2>
+
+  <table id="loadTable">
+    <thead>
+      <tr>
+        <th>Назва</th>
+        <th>Кількість</th>
+        <th>Потужність (кВт)</th>
+        <th>К. попиту</th>
+        <th>К. одночасності</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" value="Плита"></td>
+        <td><input type="number" value="2"></td>
+        <td><input type="number" step="0.01" value="2.0"></td>
+        <td><input type="number" step="0.01" value="0.8"></td>
+        <td><input type="number" step="0.01" value="0.7"></td>
+        <td><button onclick="deleteRow(this)">Видалити</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <button onclick="addRow()">Додати рядок</button>
+  <button onclick="calculate()">Розрахувати</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function addRow() {
+      const table = document.getElementById("loadTable").getElementsByTagName('tbody')[0];
+      const newRow = table.insertRow();
+      const fields = ['text', 'number', 'number', 'number', 'number'];
+      const defaultValues = ['', 1, 1.0, 1.0, 1.0];
+
+      for (let i = 0; i < fields.length; i++) {
+        let cell = newRow.insertCell();
+        let input = document.createElement("input");
+        input.type = fields[i];
+        if (fields[i] === 'number') input.step = '0.01';
+        input.value = defaultValues[i];
+        cell.appendChild(input);
+      }
+
+      let delCell = newRow.insertCell();
+      let delBtn = document.createElement("button");
+      delBtn.innerText = "Видалити";
+      delBtn.onclick = function () {deleteRow(delBtn);};
+      delCell.appendChild(delBtn);
+    }
+
+    function deleteRow(btn) {
+      const row = btn.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+    }
+
+    function calculate() {
+      const rows = document.querySelectorAll("#loadTable tbody tr");
+      let powers = [];
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("input");
+        const quantity = parseFloat(cells[1].value);
+        const power = parseFloat(cells[2].value);
+        const k_pop = parseFloat(cells[3].value);
+        const k_sim = parseFloat(cells[4].value);
+        const activePower = quantity * power * k_pop * k_sim;
+        powers.push(activePower);
+      });
+
+      // Сортуємо по спаданню
+      powers.sort((a, b) => b - a);
+
+      // Метод впорядкованих діаграм: коренева сума квадратів
+      let resultPower = 0;
+      if (powers.length > 0) {
+        resultPower = powers[0];
+        for (let i = 1; i < powers.length; i++) {
+          resultPower = Math.sqrt(resultPower ** 2 + powers[i] ** 2);
+        }
+      }
+
+      document.getElementById("result").innerText =
+        `Розрахункове електричне навантаження: ${resultPower.toFixed(2)} кВт`;
+    }
+  </script>
+</body>
+
+</html>
