@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <title>QR Генератор</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>QR Генератор</h1>
+
+  <!-- Розділ 1: Генерація QR-коду з тексту -->
+  <section id="generate">
+    <h2>🔲 Генерація з тексту</h2>
+    <input type="text" id="qr-input" placeholder="Введіть текст або URL">
+    <button onclick="generateQR()">Згенерувати</button>
+    <div id="qr-code"></div>
+    <button id="download-btn" style="display:none;" onclick="downloadQR()">⬇️ Завантажити</button>
+  </section>
+
+  <!-- Розділ 2: Генерація QR-коду з файлу -->
+  <section id="file-to-qr">
+    <h2>📁 QR з файлу</h2>
+    <input type="file" id="upload-file" onchange="generateQRFromFile()">
+    <div id="qr-file-result"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
